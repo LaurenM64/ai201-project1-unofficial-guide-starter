@@ -35,12 +35,11 @@
 
 
 **Chunk size:**
-Each chunk size will be 400 characters
+Revised chunk size from 400 to be semantic chunking separated by a double space instead, to ensure exactly one review is in each chunk instead of multiple which happened due to fluctuating sizes.
 **Overlap:**
-The overlap will be 50 characters
+Overlap changed from 50 to 0 given the change to semantic chunking
 **Reasoning:**
-This will allow maximum sized reviews (350 characters) plus the course labels, to be displayed and provide some wiggle room of overlap for reviews that may be shorter or longer so they don't get cut off.  
-
+Originally I used 400 with 50 overlap to account for 350 character max reviews, but fluctuating review sizes resulted in multiple reviews being chunked together, losing the meaning.  To ensure only one review is in each chunk, we use semantic chunking.
 ---
 
 ## Retrieval Approach
@@ -126,7 +125,7 @@ Since we are using a limited production environment, I can't use an infinite num
      with my specified chunk size and overlap" is a plan. -->
 
 **Milestone 3 — Ingestion and chunking:**
-Similar to the tinker lab, I will give Gemini my Chunking strategy of 400 character chunks and 50 character overlap to create the chunk text function in an ingest file where each review is in one chunk. 
+Similar to the tinker lab, I will give Gemini my Chunking strategy to create the chunk text function in an ingest file where each review is in one chunk. 
 **Milestone 4 — Embedding and retrieval:**
 I will pass the retrieval approach with the embedding model explaining how the k mathematically nearest chunks will be retrieved by the LLM.
 **Milestone 5 — Generation and interface:**
