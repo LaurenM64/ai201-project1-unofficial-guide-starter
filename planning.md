@@ -9,8 +9,7 @@
 
 ## Domain
 
-<!-- What domain did you choose? Why is this knowledge valuable and hard to find through official channels? -->
-
+*My domain of choice is student reviews of CS professors at Queens College.  My sources are Rate My Professor reviews of 10 different professors.  These are short reviews that have up to 350 characters and can usefully answer questions like “does this professor give a lot of work?” and “is this professor’s lectures interesting?” from students' opinionated perspectives. * 
 ---
 
 ## Documents
