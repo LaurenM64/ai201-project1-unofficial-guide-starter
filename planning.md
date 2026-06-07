@@ -19,31 +19,27 @@
 
 | # | Source | Description | URL or location |
 |---|--------|-------------|-----------------|
-| 1 | | | |
-| 2 | | | |
-| 3 | | | |
-| 4 | | | |
-| 5 | | | |
-| 6 | | | |
-| 7 | | | |
-| 8 | | | |
-| 9 | | | |
-| 10 | | | |
-
+| 1 | Joseph Svitak | Rate My Professor reviews for CS Professor Joseph Svitak at Queens College. | [ratemyprofessors.com/professor/348234](https://www.ratemyprofessors.com/professor/348234) |
+| 2 | Oren Steinberg | Rate My Professor reviews for CS Professor Oren Steinberg at Queens College. | [ratemyprofessors.com/professor/2698138](https://www.ratemyprofessors.com/professor/2698138) |
+| 3 | Simina Fluture | Rate My Professor reviews for CS Professor Simina Fluture at Queens College. | [ratemyprofessors.com/professor/513427](https://www.ratemyprofessors.com/professor/513427) |
+| 4 | Matthew Fried | Rate My Professor reviews for CS Professor Matthew Fried at Queens College. | [ratemyprofessors.com/professor/1822595](https://www.ratemyprofessors.com/professor/1822595) |
+| 5 | Jerry Waxman | Rate My Professor reviews for CS Professor Jerry Waxman at Queens College. | [ratemyprofessors.com/professor/287312](https://www.ratemyprofessors.com/professor/287312) |
+| 6 | Alex Ryba | Rate My Professor reviews for CS Professor Alex Ryba at Queens College. | [ratemyprofessors.com/professor/44623](https://www.ratemyprofessors.com/professor/44623) |
+| 7 | Delaram Kahrobaei | Rate My Professor reviews for CS Professor Delaram Kahrobaei at Queens College. | [ratemyprofessors.com/professor/2870283](https://www.ratemyprofessors.com/professor/2870283) |
+| 8 | Themistokles Bournias | Rate My Professor reviews for CS Professor Themistokles Bournias at Queens College. | [ratemyprofessors.com/professor/3058898](https://www.ratemyprofessors.com/professor/3058898) |
+| 9 | Tim Mitchell | Rate My Professor reviews for CS Professor Tim Mitchell at Queens College. | [ratemyprofessors.com/professor/2968584](https://www.ratemyprofessors.com/professor/2968584) |
+| 10 | Bojana Obrenic | Rate My Professor reviews for CS Professor Bojana Obrenic at Queens College. | [ratemyprofessors.com/professor/249702](https://www.ratemyprofessors.com/professor/249702) |
 ---
 
 ## Chunking Strategy
 
-<!-- How will you split documents into chunks?
-     State your chunk size (in tokens or characters), overlap size, and explain why those
-     numbers fit the structure of your documents.
-     A review-heavy corpus warrants different chunking than a long FAQ. -->
 
 **Chunk size:**
-
+Each chunk size will be 400 characters
 **Overlap:**
-
+The overlap will be 50 characters
 **Reasoning:**
+This will allow maximum sized reviews (350 characters) plus the course labels, to be displayed and provide some wiggle room of overlap for reviews that may be shorter or longer so they don't get cut off.  
 
 ---
 
@@ -56,10 +52,12 @@
      support, accuracy on domain-specific text, latency? -->
 
 **Embedding model:**
+`all-MiniLM-L6-v2` (via sentence-transformers)
 
 **Top-k:**
-
+Retrieving 5-7 chunks per query would be a suitable number to get a variety of reviews without overwhelming the LLM's context window and wasting a lot of API calls. 
 **Production tradeoff reflection:**
+Since we are using a limited production environment, I can't use an infinite number of API calls so its best to limit the number of chunks.  In a commercial environment there would be less limitations making it possible to use a larger number of chunks without weighing down the limits.
 
 ---
 
@@ -72,11 +70,11 @@
 
 | # | Question | Expected answer |
 |---|----------|-----------------|
-| 1 | | |
-| 2 | | |
-| 3 | | |
-| 4 | | |
-| 5 | | |
+| 1 |Who is the highest rated professor in Queens College's Computer Science Department? | Themistokles Bournias|
+| 2 |Which Professor gives the most work in Queens College's Computer Science Department?|Tim Mitchell |
+| 3 |Which professor in Queens College's Computer Science Department teaches Numerical Methods? | Tim Mitchell|
+| 4 |What are the main complaints students have about Simina Fluture?|Harsh grading, vague expectations, and a difficult attitude |
+| 5 |Are Matthew Fried's lectures mandatory to attend? |No, they are prerecorded and he provides all the materials online.|
 
 ---
 
@@ -86,19 +84,32 @@
      Consider: noisy or inconsistent documents, missing source attribution, off-topic
      retrieval, chunks that split key information across boundaries. -->
 
-1.
+1. Mixing up the context windows of multiple professors during chunk retrievals.
 
-2.
+2. Reviews getting cut off midway especially if they are of varying chunk sizes due to chunking, even with the overlap parameter. 
 
 ---
 
 ## Architecture
 
-<!-- Draw a diagram of your pipeline showing the five stages:
-     Document Ingestion → Chunking → Embedding + Vector Store → Retrieval → Generation
-     Label each stage with the tool or library you're using.
-     You can use ASCII art, a Mermaid diagram, or embed a sketch as an image.
-     You'll use this diagram as context when prompting AI tools to implement each stage. -->
+```text
+## Architecture
+
+[Document Ingestion] (Raw Rate My Professor text)
+        |
+        v
+[Chunking] (Size: 400 chars, Overlap: 50 chars)
+        |
+        v
+[Embedding + Vector Store] (all-MiniLM-L6-v2 & ChromaDB)
+        |
+        v
+[Retrieval] <--- [User Query]
+(Top 5-7 Chunks)
+        |
+        v
+[Generation] (Groq: llama-3.3-70b-versatile)
+```
 
 ---
 
@@ -115,7 +126,8 @@
      with my specified chunk size and overlap" is a plan. -->
 
 **Milestone 3 — Ingestion and chunking:**
-
+Similar to the tinker lab, I will give Gemini my Chunking strategy of 400 character chunks and 50 character overlap to create the chunk text function in an ingest file where each review is in one chunk. 
 **Milestone 4 — Embedding and retrieval:**
-
+I will pass the retrieval approach with the embedding model explaining how the k mathematically nearest chunks will be retrieved by the LLM.
 **Milestone 5 — Generation and interface:**
+I will provide instructions similar to the tinker lab where I said to answer the users question only using the text you were given to ensure that no external unrelated data is given.  This will ensure that the LLM gives us a grounded answer.  
