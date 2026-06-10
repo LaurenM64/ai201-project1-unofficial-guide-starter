@@ -69,7 +69,7 @@ Since we are using a limited production environment, I can't use an infinite num
 
 | # | Question | Expected answer |
 |---|----------|-----------------|
-| 1 |Who is the highest rated professor in Queens College's Computer Science Department? | Themistokles Bournias|
+| 1 |Who is the highest rated professor in Queens College's Computer Science Department? | Alexander Ryba|
 | 2 |Which Professor gives the most work in Queens College's Computer Science Department?|Tim Mitchell |
 | 3 |Which professor in Queens College's Computer Science Department teaches Numerical Methods? | Tim Mitchell|
 | 4 |What are the main complaints students have about Simina Fluture?|Harsh grading, vague expectations, and a difficult attitude |
